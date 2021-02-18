@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace DIY.Asset
 {
@@ -14,6 +12,7 @@ namespace DIY.Asset
         public string path;
         public string name;
 
+        
       
     }
 }

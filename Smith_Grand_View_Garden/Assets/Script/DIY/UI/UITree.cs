@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DIY.Foundation;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,16 +18,33 @@ namespace DIY.UI {
             }
         }
 
-        public UITree(Transform root, params UINode[] nodes )
+        public UITree(params UINode[] nodes )
         {
             _tree = new Dictionary<string, UINode>();
+            //先绑定第一层子node
             foreach (UINode uiNode in nodes)
             {
-                //这里仅初始化第一层，剩下的分支自行初始化
-                UINode[] uiNodes = uiNode.Init(root);
-                foreach (UINode uiNode_temp in uiNodes)
+                this[uiNode.name] = uiNode;
+            }
+        }
+
+        public void Init(Transform root) {
+            UINode[] uiNodes_origin = new UINode[] { };
+            foreach (KeyValuePair<string,UINode> keyValue in _tree)
+            {
+                uiNodes_origin[uiNodes_origin.Length] = keyValue.Value;
+            }
+
+            foreach (UINode uiNode_origin in uiNodes_origin)
+            {
+                uiNode_origin.Init(root);
+                UINode[] uiNode_childs = uiNode_origin.InitChilds();
+                if (SafeUtil.CheckLegal_Array(uiNode_childs))
                 {
-                    this[uiNode_temp.name] = uiNode_temp;
+                    foreach (UINode uiNode_child in uiNode_childs)
+                    {
+                        this[uiNode_child.name] = uiNode_child;
+                    }
                 }
             }
         }
@@ -52,18 +70,29 @@ namespace DIY.UI {
                 }
             }
         }
-        public UINode[] Init(Transform parentTrans) {
+
+        public void Init(Transform parentTrans) { 
             transform = parentTrans.Find(this.name);
-            UINode[] uiNodes = new UINode[] { this };
+        }
+
+        public UINode[] InitChilds() {
+            UINode[] uiNodes = null;
             if (childs != null && childs.Count > 0)
             {
+                uiNodes = new UINode[] { };
                 //对子物体进行初始化
                 foreach (KeyValuePair<string, UINode> item in childs)
                 {
-                    foreach (UINode node in item.Value.Init(transform))
+                    item.Value.Init(transform);
+                    UINode[] uiNodesChilds = item.Value.InitChilds();
+                    if (uiNodesChilds!=null && uiNodesChilds.Length > 0)
                     {
-                        uiNodes[uiNodes.Length-1] =node;
+                        foreach (UINode node in uiNodesChilds)
+                        {
+                            uiNodes[uiNodes.Length] = node;
+                        }
                     }
+                    
                 }
 
             }
