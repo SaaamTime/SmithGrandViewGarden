@@ -1,8 +1,7 @@
-﻿using System;
-
+﻿
 namespace DIY.Foundation
 {
-    public abstract class Base_Instance<T> where T:new()
+    public abstract class Base_Instance<T>: System.IDisposable where T : new()
     {
         private static T _instance;
         public static T Instance {
@@ -17,7 +16,7 @@ namespace DIY.Foundation
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
     }
 }
