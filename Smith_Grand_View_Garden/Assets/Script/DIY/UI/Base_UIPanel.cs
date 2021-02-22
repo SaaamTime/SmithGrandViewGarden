@@ -30,7 +30,7 @@ namespace DIY.UI
             InitBasicInfo();
             uiTree = InitUITree();
             //加载该界面的预设体，实例化该界面,并保存引用
-            AssetDatabase.
+            
         }
         public abstract void InitBasicInfo();
 
